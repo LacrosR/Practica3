@@ -67,3 +67,7 @@ rango_artefactos
 #La varianza es la dispersión de los datos alrededor de su media
 varianza <- var(numArtefactos_int)
 varianza
+varianza2 <- sum((numArtefactos_int - mean(numArtefactos_int))^2) / (length(numArtefactos_int) - 1)
+varianza2
+#con la función var hacemos el cálculo directamente; con la segunda 
+#propuesta estamos realizando todos los cálculos necesarios.
