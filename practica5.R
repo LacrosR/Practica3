@@ -91,10 +91,11 @@ sqrt(varianza) #que también nos da como resultado 30.44836
 #Ambas son medidas de variabilidad en un conjunto de datos.
 
 #12 Gráfico de dispersión
-barplot(numArtefactos_int, horiz=TRUE, main="Dispersión Nº Artefactos")
-#utilizamos la función barplot para generar un gráfico de barras de
-#nuestro vector, y añadimos el argumento horiz=TRUE para indicarle
-#al programa que queremos que este gráfico sea horizontal. 
+boxplot(numArtefactos_int, horizontal=TRUE, 
+        main="Gráfico de dispersión del número de Artefactos")
+#utilizamos la función "boxplot" para generar un gráfico de dispersión
+#de nuestro vector; añadimos el argumento "horizontal=TRUE", para que
+#sea horizontal y no vertical, y el argumento "main" para darle un nombre.
 
 #13 vector 3
 vector3 <- c(21, 45, 33, 98, 34, 90, 67, 87, 45, 11, 73, 38, 28, 15, 50, 57, 
