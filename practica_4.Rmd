@@ -2,7 +2,9 @@
 title: "Practica4"
 author: "Carlos Mota Romero"
 date: "2023-03-13"
-output: html_document
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -30,3 +32,20 @@ plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+x <- rnorm(1000)
+hist(x)
+
+y <- runif(1000)
+hist(y)
+
+set.seed(1)
+rnorm(5)
+rnorm(10)
+
+set.seed(1)
+rnorm(5)
+
+```
+
