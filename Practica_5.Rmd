@@ -3,8 +3,8 @@ title: "Practica_5"
 author: "Carlos Mota Romero"
 date: "2023-03-15"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
