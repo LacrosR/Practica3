@@ -1,0 +1,113 @@
+---
+title: "Practica_5"
+author: "Carlos Mota Romero"
+date: "2023-03-15"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Ejercicio 1: Aplica un contraste de hipótesis basado en la media a: y1, y1 e y2
+
+Primero deberemos crear los vectores y1 e y2 para poder hacer este contraste de hipótesis:
+Son la función `set.seed` creamos números aleatorios, y con las funciones `rnorm`, `rpois` y `rbinom`, crearemos vectores que tienen características propias, por ejemplo con `rnorm` creamos vectores con distribuciones de datos normales. Luego operamos con los vectores creados y creamos los vectores y1 e y2 para asegurarnos de que estos tengan distribuciones de datos aleatorias.
+
+```{r}
+set.seed(1)
+z <- rnorm(100)
+x <- rpois(100, 10.3)
+y <- rbinom(100, 1, 25)
+
+y1 <- 5*z+x*10+rnorm(100, 2, 1)
+y2 <- 5*z+x*12+rnorm(100, 2, 1)
+```
+
+El objetivo del ejercicio es realizar una hipótesis de contraste; digamos que queremos saber si la media de estas funciones es igual a 0. Ahora con la función `t.test` comprobaremos si la media de estos vectores es igual a 0. Utilizamos esta función nos dice directamente el dato que queremos saber.
+
+```{r}
+t.test(y1)
+t.test(y2)
+```
+
+# Ejercicio 2:
+Decimos que la correlación lineal es una prueba paramétrica porque asume que los datos siguen una distribución normal o gaussiana y que la relación entre las variables sigue una forma lineal. Las pruebas parámetricas como esta, asume la distribución normal de los datos; y es necesario que tengan este tipo de distribución para funcionar.
+La diferencia esencial con las pruebas no paramétricas es que estas no asumen este supuesto.
+
+# Ejercicio 3:
+Para comprobar la correlación de todas las variables de nuestro data frame data, podemos usar la función `correlation` que nos dará un valor p por cada par de variables, indicándonos la correlación entre estas variables. Cuanto más cercano sea este valor a 0 más correlacionadas están estas variables. También nos da un intervalo de confianza "c.i." que nos asegura que está correlación no sea producto del azar.
+
+```{r}
+install.packages("correlation")
+library(correlation)
+correlation(data)
+```
+
+# Ejercicio 4:
+Para generar un gráfico con las correlaciones, así como con los p-values, usaremos la función `ggcor` del paquete `GGally`, y usaremos las funciones `cor` y `cor.mtest` para generar los resultados que queremos, que leugo se añadiran como argumentos a la función `ggcor`.
+
+```{r}
+install.packages("GGally")
+install.packages("generics")
+library(GGally)
+cor_matrix <- cor(data)
+pval_matrix <- cor.mtest(data)$p
+ggcorr(cor_matrix, p.mat = pval_matrix, label = TRUE, label_round = 2)
+```
+
+# Ejercicio 5:
+Creamos esta matriz con la función `correlation`
+```{r}
+correlacion3 <- correlation::correlation(data)
+correlacion3
+```
+
+
+# Ejercicio 6:
+Usamos la función `ggplot` del paquete `ggplot2` para generar este gráfico.
+```{r}
+library(ggplot2)
+ggplot(data, aes(peso, longitud))+ 
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+
+#Ejercicio 7:
+Usando la librería `corrplot` tenemos acceso a la función `corrplot` que nos grafica la correlación de nuestros datos, pero para ello primero necesitamos creamos un objeto que sea la correlacion entre nuestros datos con la función `cor`.
+```{r}
+correlacion <- cor(data)
+corrplot(correlacion)
+```
+
+Ejercicio 8:
+a) Primero creamos los dos vectores, y luego los almacenamos en un mismo dataframe con la función `data.frame`.
+```{r}
+distancia <- c(1.1,100.2,90.3,5.4,57.5,6.6,34.7,65.8,57.9,86.1)
+n_piezas <- c(110,2,6,98,40,94,31,5,8,10)´
+
+data2 <- data.frame(distancia, n_piezas)
+```
+b)Calculamos el coeficiente de correlación con la función `cor`, y como resultado nos da un valor muy cercano a -1, por lo que si tienen correlación, y es lineal negativa.
+```{r}
+cor(data2)
+```
+c)Calcular el nivel de significancia, que lo hacemos con la función `t.test`, y de estos resultados extraemos los datos que nos interesan, el p-value y el estadístico.
+```{r}
+test_t <- t.test(data2)
+test_t$p.value 
+test_t$statistic
+```
+d) Con la función `correlation` obtenemos  intervalo de confianza al 95% en relación con el coeficiente de correlación. Como el valor p es muy bajo y cercano a 0, es probable que esta correlación sea correcta.
+```{r}
+correlacion2 <- correlation::correlation(data2)
+correlacion2$p
+```
+e) La dirección es negativa, porque el valor que obtenemos con la función `cor`es negativo y es muy intenso porque el valor mencionado es muy cercano a -1.
+f)La correlación si es significativa porque el p-value que obtenemos es menor a la fiabilidad (CI) que estábamos obteniendo.
+g) Sería más adecuado y más acertado afirmar que estos vectores/datos tienen este tipo de correlacion si tuviesemos más de 10 datos.
+
+
