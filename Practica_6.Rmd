@@ -1,0 +1,56 @@
+---
+title: "Práctica 6"
+author: "Carlos Mota Romero"
+date: "2023-03-27"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Ejercicio 1: Instalación de paquetes
+Para instalar diversas librerías que necesitaremos para trabajar en el siguiente ejercicio, usaremos el comando `install.packages` y para activarlos lo haremos con el comando `library`
+
+```{r}
+install.packages("MASS")
+library(MASS)
+install.packages("caret")
+library(caret)
+installed.packages("stats")
+library(stats)
+install.packages("olsrr")
+library(olsrr)
+install.packages("kableExtra")
+library(kableExtra)
+install.packages("knitr")
+library(knitr)
+install.packages("rmarkdown")
+library(rmarkdown)
+```
+
+## Ejercicio 2: Crear vectores
+Creamos vectores con `c`y dotándolos de un nombre
+
+```{r}
+y_cuentas <- c(110,2,6,98,40,94,31,5,8,10)
+y_cuentas
+x_distancias <- c(1.1,100.2,90.3,5.4,57.5,6.6,34.7,65.8,57.9,86.1)
+x_distancias
+```
+
+## Ejercicio 3: Comprobar la linealidad
+Comprobamos la linealidad de forma matemática con los comandos `cor`y `cor.test`El primero nos da un valor que nos informa sobre la correlacion de las variables, y el segundo nos aporta este mismo dato con un p-value que nos informa sobre las posibilidades de que ese valor no se deba al azar.
+```{r}
+cor(x_distancias, y_cuentas)
+cor.test(x_distancias, y_cuentas)
+```
+Con esto podemos llegar a saber que mantienen una correlación inversa, es decir que a más alejado del punto 0 menos cuentas aparecen. También podemos saber que es una correlación fiable porque el p-value es menor a 0.05 que es lo mínimo teniendo una confianza del 95%.
+```{r}
+plot(x_distancias, y_cuentas)
+```
+Al generar en un gráfico estas dos variables podemos ver que se mantienen gráficamente lo que habíamos asumido matemáticamente.
+
+## Ejercicio 4: Comprobar la normalidad
+Para comprobar matemáticamente y de forma automática si la distribución de datos de una variable es normal, podemos usar la función `shapiro.test`.
+Para comprobar la normalidad de la variable explicativa (en este caso el vector `x_distancias`) podemos hacer un histograma (con la función `hist`y añadiendo una linea de densidad con `lines(density(x))`para comprobar la distribución de los valores. Si tuviera una distribución en forma de campana, sería una variable normal, como no es así, comprobamos que la variable explicativa no tenga una distribución normal de los datos.

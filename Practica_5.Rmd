@@ -3,8 +3,8 @@ title: "Practica_5"
 author: "Carlos Mota Romero"
 date: "2023-03-15"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -41,7 +41,6 @@ La diferencia esencial con las pruebas no paramétricas es que estas no asumen e
 Para comprobar la correlación de todas las variables de nuestro data frame data, podemos usar la función `correlation` que nos dará un valor p por cada par de variables, indicándonos la correlación entre estas variables. Cuanto más cercano sea este valor a 0 más correlacionadas están estas variables. También nos da un intervalo de confianza "c.i." que nos asegura que está correlación no sea producto del azar.
 
 ```{r}
-install.packages("correlation")
 library(correlation)
 correlation(data)
 ```
@@ -50,8 +49,6 @@ correlation(data)
 Para generar un gráfico con las correlaciones, así como con los p-values, usaremos la función `ggcor` del paquete `GGally`, y usaremos las funciones `cor` y `cor.mtest` para generar los resultados que queremos, que leugo se añadiran como argumentos a la función `ggcor`.
 
 ```{r}
-install.packages("GGally")
-install.packages("generics")
 library(GGally)
 cor_matrix <- cor(data)
 pval_matrix <- cor.mtest(data)$p
@@ -87,7 +84,7 @@ Ejercicio 8:
 a) Primero creamos los dos vectores, y luego los almacenamos en un mismo dataframe con la función `data.frame`.
 ```{r}
 distancia <- c(1.1,100.2,90.3,5.4,57.5,6.6,34.7,65.8,57.9,86.1)
-n_piezas <- c(110,2,6,98,40,94,31,5,8,10)´
+n_piezas <- c(110,2,6,98,40,94,31,5,8,10)
 
 data2 <- data.frame(distancia, n_piezas)
 ```
