@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Para instalar diversas librerías que necesitaremos para trabajar en el siguiente ejercicio, usaremos el comando `install.packages` y para activarlos lo haremos con el comando `library`
 
 ```{r}
-install.packages("MASS")
+install.packages("MASS", repos=)
 library(MASS)
 install.packages("caret")
 library(caret)
@@ -51,6 +51,75 @@ plot(x_distancias, y_cuentas)
 ```
 Al generar en un gráfico estas dos variables podemos ver que se mantienen gráficamente lo que habíamos asumido matemáticamente.
 
-## Ejercicio 4: Comprobar la normalidad
-Para comprobar matemáticamente y de forma automática si la distribución de datos de una variable es normal, podemos usar la función `shapiro.test`.
+## Ejercicio 4: Comprobar la normalidad:
 Para comprobar la normalidad de la variable explicativa (en este caso el vector `x_distancias`) podemos hacer un histograma (con la función `hist`y añadiendo una linea de densidad con `lines(density(x))`para comprobar la distribución de los valores. Si tuviera una distribución en forma de campana, sería una variable normal, como no es así, comprobamos que la variable explicativa no tenga una distribución normal de los datos.
+```{r}
+hist(x_distancias, prob=TRUE)
+lines(density(x_distancias))
+```
+Para comprobar matemáticamente y de forma automática si la distribución de datos de una variable es normal, podemos usar la función `shapiro.test`. Pero al tener tan pocos valores en nuestra variable, esta función no nos da un resultado fiable. De hecho en este caso, nos da un valor p mayor a 0'05, lo que indicaría una distribución normal de los datos, cuando sabemos que esto no es el caso para nuestra muestra.
+```{r}
+shapiro.test(x_distancias)
+```
+
+## Ejercicio 5: Multiplicar las variables
+Para multiplicar las variables utilizamos el caracter `*` y llamamos al objeto creado con un nuevo nombre con el símbolo `<-`.
+```{r}
+xy <- x_distancias*y_cuentas
+xy
+```
+
+#Ejercicio 6: Elevar al cuadrado
+Para elevar al cuadrado nuestra variable explicativa `x_distancias` utilizamos el símbolo `^`.
+```{r}
+x_cuadrado <- x_distancias^2
+x_cuadrado
+```
+
+## Ejercicio 7: Crear un dataframe
+Para crear un dataframe con todos los vectores que hemos estado creando hasta ahora, usamos la función `data.frame`.
+```{r}
+tabla_datos <- data.frame(y_cuentas, x_distancias, xy, x_cuadrado)
+tabla_datos
+```
+
+## Ejercicio 8: Visualizar tabla con kableExtra
+Para poder visualizar una tabla de datos previamente creada con la librería de `kableExtra`primero tenemos que estilizarla y luego ejecutarla; algo que podemos conseguir con los siguientes comandos:
+```{r}
+kbl(tabla_datos) %>%
+  kable_minimal()
+```
+
+## Ejercicio 9: Sumatorios
+Para realizar sumatorios corremos la función `sum`, dándole a cada valor que necesitemos un nuevo nombre. Para ello le damos a la función la columna de nuestro dataframe de la que queremos que realice un sumatorio con el símbolo `$`.
+```{r}
+sum_y <- sum(tabla_datos$y_cuentas)
+sum_y
+sum_x <- sum(tabla_datos$x_distancias)
+sum_x
+sum_xy <- sum(tabla_datos$xy)
+sum_xy
+sum_x2 <- sum(tabla_datos$x_cuadrado)
+sum_x2
+```
+
+## Ejercicio 10: Añadir los sumatorios al dataframe
+Para añadir los valores obtenidos de los sumatorios de cada columna utilizaremos la función `rbind` que lo que hace es añadir nuevos datos a un dataframe ya creado; como argumentos le damos nuestra tabla y un nuevo vector que hemos creado previamente que almacena todos los valores que queremos añadir, en el mismo orden de las columnas de nuestro dataframe. Luego le he cambiado el nombre a la fila donde se almacenan los sumatorios para distinguirla del resto de casos con la función `rownames`.
+```{r}
+sumatorios <- c(sum_y, sum_x, sum_xy, sum_x2)
+tabla_datos2 <- rbind(tabla_datos, sumatorios)
+tabla_datos2
+rownames(tabla_datos2)[11] <- "sumatorio"
+rownames(tabla_datos2)[11]
+```
+
+## Ejercicio 11: 
+$$B_0 -> y - B_1 · x_1 + ε_1$$
+```{r}
+datos <- data.frame(x_distancias, y_cuentas)
+modelo <- lm(y_cuentas ~ x_distancias, datos)
+summary(modelo)
+plot(x_distancias, y_cuentas)
+abline(modelo)
+```
+
