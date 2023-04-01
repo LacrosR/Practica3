@@ -2,7 +2,10 @@
 title: "Práctica 6"
 author: "Carlos Mota Romero"
 date: "2023-03-27"
-output: html_document
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -13,19 +16,19 @@ knitr::opts_chunk$set(echo = TRUE)
 Para instalar diversas librerías que necesitaremos para trabajar en el siguiente ejercicio, usaremos el comando `install.packages` y para activarlos lo haremos con el comando `library`
 
 ```{r}
-install.packages("MASS", repos=)
+install.packages("MASS", repos = "http://cran.us.r-project.org")
 library(MASS)
-install.packages("caret")
+install.packages("caret", repos = "http://cran.us.r-project.org")
 library(caret)
-installed.packages("stats")
+installed.packages("stats", repos = "http://cran.us.r-project.org")
 library(stats)
-install.packages("olsrr")
+install.packages("olsrr", repos = "http://cran.us.r-project.org")
 library(olsrr)
-install.packages("kableExtra")
+install.packages("kableExtra", repos = "http://cran.us.r-project.org")
 library(kableExtra)
-install.packages("knitr")
+install.packages("knitr", repos = "http://cran.us.r-project.org")
 library(knitr)
-install.packages("rmarkdown")
+install.packages("rmarkdown", repos = "http://cran.us.r-project.org")
 library(rmarkdown)
 ```
 
@@ -114,12 +117,128 @@ rownames(tabla_datos2)[11]
 ```
 
 ## Ejercicio 11: 
-$$B_0 -> y - B_1 · x_1 + ε_1$$
+Para calcular los datos necesarios para crear nuestra recta de regresión utilizaremos la función `lm`, le daremos un nombre al objeto creado, y luego con la función `summary`extraeremos los datos que necesitamos para la recta de regresión. 
 ```{r}
 datos <- data.frame(x_distancias, y_cuentas)
 modelo <- lm(y_cuentas ~ x_distancias, datos)
 summary(modelo)
-plot(x_distancias, y_cuentas)
+```
+Luego sustituimos en la ecuación:
+$$B_0 -> y - B_1 · x_1 + ε_1$$
+Y nos queda:
+$$Y_0 = 95.36 - 1.082 · x_1 + ε_1$$
+
+## Ejercicio 12: Graficar la recta de regresión:
+Primero necesitamos crear nuestra gráfico de nube de puntos, lo cual haremos con la función `plot` dándole nuestros ejes x e y. Luego graficaremos la recta de regresión con la función `abline` que la creará a partir de los datos del modelo creado en el anterior ejercicio. Con los argumentos `main`, `xlab`e `ylab` le damos un nombre al gráfico y editamos las etiquetas asociadas al eje x e y, respectivamente.
+```{r}
+plot(x_distancias, y_cuentas, main="Gráfico de dispersión con recta de regresión", xlab= "Distancia en km", ylab= "Número de cuentas")
 abline(modelo)
 ```
 
+## Ejercicio 13: Residuos
+Llamamos residuos a la diferencia que existe entre los valores del eje Y y los que predecimos a través de una recta de regresión. Estos valores los podemos calcular con la función `resid`.
+Los residuos estandarizados se calculan con el valor de un residuo dividido entre una estimación de su desviación estándar. Lo podemos hacer de forma automática con la función `rstandard`.
+Por último los residuos estudentizados se calculan con el valor residual de regresión dividido por su error estándar ajustado. Lo podemos hacer con la función: `rstudent`.
+```{r}
+resid(modelo)
+rstandard(modelo)
+rstudent(modelo)
+```
+
+## Ejercicio 14: Predecir a través del modelo de regresión un valor de X
+Para ello sustituimos el valor de x que queremos calcular en nuestra recta de regresión:
+```{r}
+y_6.6 <- 95.36 - 1.082 * 6.6
+y_6.6
+```
+
+## Ejercicio 15: Generar dos conjuntos de datos:
+Queremos generar dos conjuntos de datos, uno para entrenar y crear una recta de regresión y otro para comprobar la validez de esta.
+```{r}
+library(dplyr)
+data <- data.frame(x_distancias, y_cuentas)
+train <- data %>% dplyr::sample_frac(.8)
+test <- dplyr::anti_join(data, train)
+train
+test
+```
+
+## Ejercicio 16: Generar el modelo otra vez
+Para generar el modelo de regresión con los datos de entrenamiento repetimos todos los pasos que para cuando lo generamos la primera vez pero ahora con los conjuntos de datos de entrenamiento
+```{r}
+modelo_train <- lm(x_distancias ~ y_cuentas, train)
+summary(modelo_train)
+plot(train)
+abline(modelo_train)
+```
+
+## Ejercicio 17: Asteriscos y R^2
+Los asteriscos que aparecen en la columna de la derecha de los datos obtenidos con la función `summary` de nuestro modelo, nos informan sobre la fiabilidad de nuestro modelo. A más asteriscos menor es la posibilidad de que la relación que hemos generado entre las variables se deba al azar.
+R^2 nos informa sobre la relación porcentual que existe entre los datos y la línea de regresión que hemos creado. A más se acerque R^2 al 1 más se acercan los datos de la variable dependiente a nuestra línea de regresión.
+
+## Ejercicio 18: Grados de libertad
+Los grados de libertad del modelo son la cantidad de datos que se utilizan para estimar los parámetros de un modelo concreto. En el caso de los modelos de regresión lineal como el que hemos creado, los parámetros a estimar son la pendiente y la intersección con el eje Y. Los grados de libertad del modelo se calculan restando el número de parámetros a estimar a las observaciones del modelo. En nuestro caso tenemos dos parámetros a estimar y varias observaciones. Si usamos el primer modelo que hemos creado, sería 10 el número de observaciones menos 2, el número de parámetros a estimar, lo cual nos daría 8. Si cogemos el segundo modelo creado (entrenamiento), el resultado sería de 6 porque el número de observaciones es menor.
+El grado de libertad de un modelo es relevante porque nos informa sobre la fiabilidad del modelo. A mayor grado de libertad, más fiable será el modelo, porque tenemos más observaciones. Siendo este el caso, nuestro modelo original sería más fiable siguiendo este pensamiento; pero ya que hemos incluido todos nuestros datos para crearlo, no tendríamos oportunidad de comprobar su fiabilidad con otro conjunto de datos mediante un método de validación.
+
+## Ejercicio 19: Varianza
+La varianza de un modelo nos informa sobre cómo de correcto es el ajuste que se ha producido entre la variable dependiente y la independiente, y con ello comprobar la significancia estadística de nuestra variable dependiente. 
+En un modelo de regresión lineal, la varianza total de la variable dependiente (y) se puede descomponer en dos componentes: la varianza explicada por el modelo (también conocida como suma de cuadrados de regresión) y la varianza no explicada por el modelo (también conocida como suma de cuadrados de residuos).
+Para poder usar el código posterior es necesario que nuestros valores estén almacenados en un dataframe; para ello:
+```{r}
+train_df <- data.frame(train)
+train_df
+is.data.frame(train_df)
+```
+
+Sabiendo que nuestros datos sí están almacenados ahora en un dataframe, podemos utilizar el siguiente código para calcular la varianza de nuestro modelo:
+```{r}
+anova(modelo_train)
+var_total <- var(train_df$y)
+var_total
+var_explicada <- sum((modelo_train$fitted.values - mean(train_df$y))^2)
+var_explicada
+var_no_explicada <- sum((train_df$y - modelo_train$fitted.values)^2)
+var_no_explicada
+```
+Una varianza explicada alta en el modelo significa que las correlaciones establecidas por el modelo tienen una gran significancia estadística, mientras que una varianza no explicada alta significaría que el modelo no está correctamente ajustada, explicada o que hay datos que no cuadran con las predicciones del modelo.
+Como en nuestro caso tenemos una varianza explicada baja en comparación con la varianza no explicada, no podemos asumir que nuestro modelo sea bueno para realizar predicciones.
+
+## Ejercicio 20: Validación del modelo
+El error cuadrático medio es una métrica utilizada para evaluar el rendimiento de un modelo de regresión lineal mediante una operación de validación cruzada. Representa la media de los errores cuadráticos entre las predicciones del modelo y los valores reales en los datos de prueba. Un valor más bajo indica que el modelo es mejor para ajustarse a los datos.
+Podemos calcularlo con el siguiente código:
+```{r}
+predicciones <- predict(modelo_train, newdata = test)
+predicciones
+error_cuadratico_medio <- sqrt(mean((test$y - predicciones)^2))
+error_cuadratico_medio
+```
+Teniendo en cuenta que el error de nuestro modelo es de más de 32 unidades cuadradas, podemos decir que tiene mucho margen de error, ya que los datos de nuestra variables no son excesivamente altos, llegando tan solo algunos a superar las 100 unidades. 
+
+## Ejercicio 21: Valores influyentes
+Para comprobar si existen valores influyentes en nuestro modelo podemos usar el método de Cook, que mide la influencia de una observación en el ajuste del modelo, eliminando la observación y comparando el ajuste del modelo con y sin ella. Si el ajuste del modelo cambia significativamente, entonces la observación se considera influyente.
+Para ello corremos el siguiente código:
+```{r}
+cooksd <- cooks.distance(modelo_train)
+plot(cooksd, pch = 20, main = "Distancia de Cook")
+abline(h = 3/length(cooksd), col = "red")
+```
+Podemos observar que nuestro valor 7 es un outlier del nuestro modelo, y por tanto lo podemos considerar como un valor influyente para nuestro modelo.
+
+## Ejercicio 22: Supuesto de independencia de los residuos
+El supuesto de independencia de los residuos en un modelo de regresión lineal es una suposición que hacemos al asumir que los residuos no deben mostrar patrones o tendencias en su distribución y por tanto que no están correlacionados entre sí. Si esto no se cumple, no podemos decir que los errores sean independientes y por ello que las estimaciones que obtenemos pueden estar sesgadas.
+Para comprobar dicho supuesto podemos hacer lo siguiente:
+```{r}
+residuos_train <- resid(modelo_train)
+plot(modelo_train$fitted.values, residuos_train, xlab = "Valores ajustados", ylab = "Residuos", main = "Gráfico de residuos")
+```
+Al graficar los resultados comprobamos que sí existe una tendencia de agrupación entre los residuos, pero que no todos ellos se encuentran igualados, teniendo un caso concreto en el que esta tendencia desaparece. Es muy probable que tengamos que ajustar nuestros datos del modelo, para generar otro con mejores capacidades predictivas.
+
+## Ejercicio 23: Comprobar rango de errores
+La primera forma en la que podemos comprobar si el rango de errores para nuestro modelo es constante sería con la gráfica del anterior ejercicio, que como hemos hablado tiene un outlier, y por tanto no podemos decir que permanezcan constantes.
+Otra forma de hacerlo sería usando el método/test de Breusch-Pagan:
+```{r}
+library(lmtest)
+bp <- bptest(modelo_train)
+bp
+```
+Ya que el p-value que nos ofrece es mayor a nuestro rango de confianza, no podemos decir que los errores de nuestro modelo permanezcan constantes, como ya habíamos comprrobado gráficamente. Mediante el uso de este test el p-value debería permanecer menor a 0'05 en un rango de confianza del 95%, para que el supuesto fuese correcto.

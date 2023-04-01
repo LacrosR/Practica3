@@ -70,7 +70,45 @@ B1 <- -197220.7/-217757.7
 B1
 
 datos <- data.frame(x_distancias, y_cuentas)
+data <- data.frame(y_cuentas, x_distancias)
+data
 modelo <- lm(y_cuentas ~ x_distancias, datos)
 summary(modelo)
 plot(x_distancias, y_cuentas)
 abline(modelo)
+
+plot(x_distancias, y_cuentas, main="Gráfico de dispersión con recta de regresión", xlab= "Distancia en km", ylab= "Número de cuentas")
+
+resid(modelo)
+rstandard(modelo)
+rstudent(modelo)
+
+y_6.6 <- 95.36 - 1.082 * 6.6
+y_6.6
+
+install.packages("dplyr")
+library(dplyr)
+library(caret)
+entrenamiento <- data_df %>%
+  createDataPartition(p=.8, list=FALSE)
+entrenamiento <- data_df[-entrenamiento]
+test <- data_df[entrenamiento]
+entrenamiento
+test
+
+data
+str(data)
+typeof(data_df)
+data_df <- as.data.frame(data)
+is.data.frame(data_df)
+data_df
+
+train <- data_df %>% dplyr::sample_frac(.8)
+test <- dplyr::anti_join(data_df, train)
+train
+test
+
+modelo_train <- lm(y_cuentas ~ x_distancias, train)
+summary(modelo_train)
+plot(train)
+abline(modelo_train)
