@@ -98,10 +98,10 @@ test
 
 data
 str(data)
-typeof(data_df)
-data_df <- as.data.frame(data)
-is.data.frame(data_df)
-data_df
+typeof(train_df)
+data_df <- as.data.frame(entrenamiento)
+is.data.frame(entrenamiento)
+
 
 train <- data_df %>% dplyr::sample_frac(.8)
 test <- dplyr::anti_join(data_df, train)
@@ -112,3 +112,58 @@ modelo_train <- lm(y_cuentas ~ x_distancias, train)
 summary(modelo_train)
 plot(train)
 abline(modelo_train)
+
+anova(modelo_train)
+var_total <- var(train_df$y)
+var_total
+var_explicada <- sum((modelo_train$fitted.values - mean(train_df$y))^2)
+var_explicada
+var_no_explicada <- sum((train_df$y - modelo_train$fitted.values)^2)
+var_no_explicada
+
+plot(train_df)
+
+y_train <- c(94, 10, 2, 40, 110, 6, 5, 98)
+x_train <- c(6.6, 86.1, 100.2, 57.5, 1.1, 90.3, 65.8, 5.4)
+train_df <- data.frame(y_train, x_train)
+train_df2 <- data.frame(train)
+train_df2
+is.data.frame(train_df2)
+
+predicciones <- predict(modelo_train, newdata = test)
+predicciones
+error_cuadratico_medio <- sqrt(mean((test$y - predicciones)^2))
+error_cuadratico_medio
+
+ajuste <- function(datos, indices){
+  modelo <- lm(y ~ x1 + x2 + x3, data = datos[indices, ])
+  return(modelo)
+}
+cv <- cv.glm(datos, modelo, K = 10, fit = ajuste)
+
+cooksd <- cooks.distance(modelo_train)
+plot(cooksd, pch = 20, main = "Distancia de Cook")
+abline(h = 3/length(cooksd), col = "red")
+
+residuos_train <- resid(modelo_train)
+plot(modelo_train$fitted.values, residuos_train, xlab = "Valores ajustados", ylab = "Residuos", main = "Gráfico de residuos")
+
+library(lmtest)
+bp <- bptest(modelo_train)
+bp
+
+
+library(dplyr)
+data <- data.frame(x_distancias, y_cuentas)
+plot(data)
+train <- data %>% dplyr::sample_frac(.8)
+test <- dplyr::anti_join(data, train)
+train
+test
+
+
+library(tinytex)
+
+tinytex::tlmgr_repo('https://ctan.uib.no/systems/texlive/tlnet/')
+
+tinytex::tlmgr_install('multirow')
