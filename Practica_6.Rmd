@@ -212,7 +212,7 @@ predicciones
 error_cuadratico_medio <- sqrt(mean((test$y - predicciones)^2))
 error_cuadratico_medio
 ```
-Teniendo en cuenta que el error de nuestro modelo es de más de 32 unidades cuadradas, podemos decir que tiene mucho margen de error, ya que los datos de nuestra variables no son excesivamente altos, llegando tan solo algunos a superar las 100 unidades. 
+Teniendo en cuenta que el error de nuestro modelo es de más de 58 unidades cuadradas, podemos decir que tiene mucho margen de error, ya que los datos de nuestra variables no son excesivamente altos, llegando tan solo algunos a superar las 100 unidades. 
 
 ## Ejercicio 21: Valores influyentes
 Para comprobar si existen valores influyentes en nuestro modelo podemos usar el método de Cook, que mide la influencia de una observación en el ajuste del modelo, eliminando la observación y comparando el ajuste del modelo con y sin ella. Si el ajuste del modelo cambia significativamente, entonces la observación se considera influyente.
