@@ -46,10 +46,12 @@ colnames(SH) <- c("Caso", "Material", "Contexto", "Loop", "Remache",
 # Para asignarle etiquetas a las variables cualitativas podemos hacer uso
 #del siguiente código:
 SH$Material <- ordered(SH$Material, levels <- c(1,2), labels <- c("Bronce", "Hierro"))
-SH$Contexto <- ordered(SH$Contexto, levels <- c(1,2,3), labels <- c("Aislado", "Asentamiento", "Enterramiento"))
+SH$Contexto <- ordered(SH$Contexto, levels <- c(1,2,3), 
+                       labels <- c("Aislado", "Asentamiento", "Enterramiento"))
 SH$Loop <- ordered(SH$Loop, levels <- c(1,2), labels <- c("No", "Si"))
 SH$Remache <- ordered(SH$Remache, levels <- c(1,2), labels <- c("No", "Si"))
-SH$Conservacion <- ordered(SH$Conservacion, levels <- c(1,2,3,4), labels <- c("Excelente", "Buena", "Suficiente", "Pobre"))
+SH$Conservacion <- ordered(SH$Conservacion, levels <- c(1,2,3,4), 
+                           labels <- c("Excelente", "Buena", "Suficiente", "Pobre"))
 # Este código funciona de manera similar al del anterior ejercicio. Primero
 #necesitamos llamar a las columnas a las que le vamos a sustituir los valores,
 #y después con la función "ordered" sustituiremos los valores numéricos "levels"
@@ -83,7 +85,7 @@ MatCons
 MatDF <- data.frame(TablaMat)
 ContDF <- data.frame(TablaCont)
 ConsDF <- data.frame(TablaCons)
-# El código que utilizamos para crear estos objetos que contienen los porcenatajes
+# El código que utilizamos para crear estos objetos que contienen los porcentajes
 #de nuestras variables es la operación matemática necesaria para calcularlos.
 PorcMat <- with(MatDF, Freq/sum(Freq) * 100)
 PorcMat
@@ -93,7 +95,7 @@ PorcCons <- with(ConsDF, Freq/sum(Freq) * 100)
 PorcCons
 
 # Ejercicio 9:
-Para generar tablas de frecuencia usamos la función "table"; para almacenar
+#Para generar tablas de frecuencia usamos la función "table"; para almacenar
 #los valores de estas tablas los guardamos como objetos con la función "<-". 
 #A la función table solo tenemos que darle la variable de nuestra tabla de datos
 #que queremos que convierta en tabla de frecuencia, para lo que usaremos
@@ -109,7 +111,9 @@ TablaCons <- table(SH$Contexto)
 #damos una tabla de frecuencias como las previamente generadas.
 #Podemos cambiar el color del gráfico con el argumento "col"
 barplot(TablaMat)
+
 barplot(TablaCons, col="red")
+
 barplot(TablaCont, col= c("green", "blue", "yellow"))
 #Para hacer los gráficos de barras horizontales añadimos el argumento 
 #"horiz=TRUE"
